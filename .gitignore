@@ -160,6 +160,9 @@ venv.bak/
 # Data
 /data
 
+# Model logs
+catboost_info/
+
 # Spyder project settings
 .spyderproject
 .spyproject
