@@ -2,6 +2,12 @@
 
 An end-to-end Machine Learning pipeline and REST API that predicts monthly base salaries for Tech roles in Singapore.
 
+<p align="center">
+  <img src="docs/assets/app_ui_display_1.png" alt="App UI" width="640" />
+  <br />
+  <em>Salary Predictor App Display</em>
+</p>
+
 ## 📌 Project Overview
 Job seekers often lack transparency in tech salaries in Singapore as most job openings do not disclose salary information. This makes it difficult for candidates to negotiate effectively and for employers to benchmark competitive compensation. This project aims to bridge this gap by building a predictive machine learning model that estimates the lower bound (min) and upper bound (max) of a salary based on the semantic content of a job listing: bullet points of job descriptions, tech stacks, and company details.
 

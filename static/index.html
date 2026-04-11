@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SG Tech Salary Predictor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 flex items-center justify-center min-h-screen p-4">
+
+    <div class="bg-slate-800 p-8 rounded-2xl shadow-2xl w-full max-w-2xl border border-slate-700">
+        <h1 class="text-3xl font-bold mb-2 text-emerald-400">Singapore Tech Salary Predictor</h1>
+        <p class="text-slate-400 mb-6">Paste a job description from LinkedIn or JobStreet below to estimate the monthly base salary.</p>
+
+        <textarea id="job-text" rows="8" 
+            class="w-full bg-slate-900 text-slate-200 rounded-xl p-4 border border-slate-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-all placeholder-slate-500"
+            placeholder="e.g., We are looking for a Data Scientist with 3 years of Python and AWS experience..."></textarea>
+
+        <button onclick="predict()" id="predict-btn"
+            class="w-full mt-6 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 rounded-xl transition-colors duration-200 flex justify-center items-center">
+            <span>Analyze & Predict Salary</span>
+        </button>
+
+        <div id="results" class="hidden mt-8 text-center animate-fade-in">
+            <p class="text-sm text-slate-400 uppercase tracking-widest font-semibold">Estimated Base Salary</p>
+            <p id="salary-display" class="text-5xl font-bold text-emerald-400 mt-2">$0</p>
+        </div>
+    </div>
+
+    <script>
+        async function predict() {
+            const btn = document.getElementById('predict-btn');
+            const results = document.getElementById('results');
+            const display = document.getElementById('salary-display');
+            const text = document.getElementById('job-text').value;
+
+            if (!text) return alert("Please paste a job description first!");
+
+            btn.innerHTML = "Analyzing...";
+            btn.classList.add("opacity-75", "cursor-not-allowed");
+            results.classList.remove('hidden');
+            display.innerText = "Calculating...";
+            display.classList.remove("text-emerald-400", "text-red-400");
+            display.classList.add("text-slate-400", "animate-pulse");
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ description: text })
+                });
+
+                const data = await response.json();
+                
+                display.classList.remove("text-slate-400", "animate-pulse");
+                display.classList.add("text-emerald-400");
+                display.innerText = `$${data.predicted_salary ? data.predicted_salary.toLocaleString() : "N/A"} SGD`;
+
+            } catch (error) {
+                display.classList.remove("text-slate-400", "animate-pulse");
+                display.classList.add("text-red-400");
+                display.innerText = "API Error";
+                console.error(error);
+            } finally {
+                btn.innerHTML = "Analyze & Predict Salary";
+                btn.classList.remove("opacity-75", "cursor-not-allowed");
+            }
+        }
+    </script>
+</body>
+</html>
