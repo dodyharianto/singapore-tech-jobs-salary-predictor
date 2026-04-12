@@ -7,6 +7,7 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 import os
 import json
+import re
 
 app = FastAPI(title='SG Tech Jobs Salary Predictor API', version='1.0')
 
@@ -26,7 +27,7 @@ def parse_job_description(description: str) -> dict:
     }
 
     for feature, keywords in keyword_rules.items():
-        extracted_features[feature] = 1 if any(keyword in description for keyword in keywords) else 0
+        extracted_features[feature] = int(bool(re.search(keywords, description)))
 
     return extracted_features
 
