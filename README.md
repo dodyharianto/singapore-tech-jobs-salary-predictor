@@ -3,9 +3,9 @@
 An end-to-end Machine Learning pipeline and REST API that predicts monthly base salaries for Tech roles in Singapore.
 
 <p align="center">
-  <img src="docs/assets/app_ui_display_1.png" alt="App UI" width="640" />
+  <img src="docs/assets/app_ui_display_1.png" alt="App UI" width="600" />
   <br />
-  <em>Salary Predictor App Display</em>
+  <strong>Salary Predictor App Display</strong>
 </p>
 
 ## 📌 Project Overview
@@ -32,6 +32,7 @@ pip install -r requirements.txt
 
 ### 3. Run the FastAPI server
 ```bash
+cd app
 uvicorn app.main:app --reload
 ```
 
