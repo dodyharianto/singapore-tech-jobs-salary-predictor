@@ -1,0 +1,5 @@
+outs:
+- md5: ff48d7835c5b288aa4deecea637bf95e
+  size: 6611024
+  hash: md5
+  path: sg-tech-jobs.csv

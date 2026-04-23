@@ -158,7 +158,9 @@ env.bak/
 venv.bak/
 
 # Data
-/data
+/data/*
+!/data/*.dvc
+!/data/.gitignore
 
 # Model logs
 catboost_info/
