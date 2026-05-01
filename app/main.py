@@ -8,35 +8,26 @@ from pydantic import BaseModel
 import os
 import json
 import re
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 app = FastAPI(title='SG Tech Jobs Salary Predictor API', version='1.0')
 
 class JobTextRequest(BaseModel):
     description: str
 
-with open('keywords.json') as f:
-    keyword_rules = json.load(f)
-
 def parse_job_description(description: str) -> dict:
     description = description.lower()
-
-    extracted_features = {
-        'location': 'Central',
-        'classifications/0/sub': 'Help Desk & IT Support',
-        'workTypes/0': 'Full-time'
+    input_data = {
+        'text_corpus': description,
     }
-
-    for feature, keywords in keyword_rules.items():
-        extracted_features[feature] = int(bool(re.search(keywords, description)))
-
-    return extracted_features
+    return input_data
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 static_dir = os.path.join(os.path.dirname(current_dir), "static")
 models_dir = os.path.join(os.path.dirname(current_dir), "models")
 app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
-model_pkl_filename = 'rf_baseline_v2.pkl'
+model_pkl_filename = 'rf_tf_idf_corpus_only.pkl'
 model_path = os.path.join(models_dir, model_pkl_filename)
 model = joblib.load(model_path)
 
