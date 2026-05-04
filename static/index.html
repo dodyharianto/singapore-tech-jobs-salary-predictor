@@ -12,9 +12,25 @@
         <h1 class="text-3xl font-bold mb-2 text-emerald-400">Singapore Tech Salary Predictor</h1>
         <p class="text-slate-400 mb-6">Paste a job description from LinkedIn or JobStreet below to estimate the monthly base salary.</p>
 
-        <textarea id="job-text" rows="8" 
-            class="w-full bg-slate-900 text-slate-200 rounded-xl p-4 border border-slate-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-all placeholder-slate-500"
+        <input id="job-title" rows="8" 
+            class="w-full bg-slate-900 text-slate-200 rounded-xl p-4 border border-slate-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-all placeholder-slate-500 mt-4"
+            placeholder="e.g., Data Scientist"></input>
+
+        <input id="company-name" rows="8" 
+            class="w-full bg-slate-900 text-slate-200 rounded-xl p-4 border border-slate-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-all placeholder-slate-500 mt-4"
+            placeholder="e.g., Tech Company"></input>
+
+        <textarea id="job-description" rows="8" 
+            class="w-full bg-slate-900 text-slate-200 rounded-xl p-4 border border-slate-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-all placeholder-slate-500 mt-4"
             placeholder="e.g., We are looking for a Data Scientist with 3 years of Python and AWS experience..."></textarea>
+
+        <p class="flex items-start mt-2 text-xs text-slate-400">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-1.5">
+                <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd" />
+            </svg>
+        
+            Please provide at least 30 words for job description.
+        </p>
 
         <button onclick="predict()" id="predict-btn"
             class="w-full mt-6 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 rounded-xl transition-colors duration-200 flex justify-center items-center">
@@ -32,9 +48,16 @@
             const btn = document.getElementById('predict-btn');
             const results = document.getElementById('results');
             const display = document.getElementById('salary-display');
-            const text = document.getElementById('job-text').value;
+            const jobTitle = document.getElementById('job-title').value;
+            const companyName = document.getElementById('company-name').value;
+            const jobDescription = document.getElementById('job-description').value;
 
-            if (!text) return alert("Please paste a job description first!");
+            console.log(jobTitle);
+            console.log(companyName);
+            console.log(jobDescription);
+
+            if (!jobTitle) return alert("Please input a job title first!")
+            if (!jobDescription) return alert("Please paste a job description first!");
 
             btn.innerHTML = "Analyzing...";
             btn.classList.add("opacity-75", "cursor-not-allowed");
@@ -47,10 +70,21 @@
                 const response = await fetch('http://127.0.0.1:8000/predict', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ description: text })
+                    body: JSON.stringify({
+                        job_title: jobTitle,
+                        company_name: companyName,
+                        job_description: jobDescription
+                    })
                 });
 
                 const data = await response.json();
+                
+                if (data.error) {
+                    display.classList.remove("text-slate-400", "animate-pulse");
+                    display.classList.add("text-red-400");
+                    display.innerText = data.error;
+                    return;
+                }
                 
                 display.classList.remove("text-slate-400", "animate-pulse");
                 display.classList.add("text-emerald-400");
